@@ -1,0 +1,129 @@
+<?xml version="1.0"?>
+
+<project name="JUnitTest">
+<property file="build.properties" />
+<property name="custom_shared_lib" value="custom-extensions/custom-projects/custom-shared-lib/src/main/java"/>
+<property name="full-compile" location="true"/>
+<property name="testdir" location="test"/>
+<property name="srcdir" location="src"/>
+<property name="rscdir" location="${calypso.path}/${calypso.dir}/client/resources"/>
+<property name="libdir" location="${calypso.path}/${calypso.dir}/client/lib"/>
+
+<path id="classpath">	
+<path location = "${calypso_path}/${calypso_dir}/client/lib">
+<fileset dir="${calypso_path}/${calypso_dir}/client/lib" includes="*.jar"></fileset>
+</path >		
+</path>
+	
+<path id="classpath.test">
+<pathelement location="${testdir}"/>
+<pathelement location="${srcdir}"/>
+<path refid = "classpath"/> 
+</path>
+
+<target name="clean">
+<delete verbose="${full-compile}">
+<fileset dir ="${testdir}" includes="**/*.class"/>
+</delete>
+</target>
+	
+<target name="compile" depends="clean">
+<javac classpathref ="classpath.test"  verbose="${full-compile}" destdir="${testdir}" srcdir="${srcdir}" includeantruntime="false">
+</javac>
+</target>
+	
+<target name="test" depends="compile">
+<junit haltonerror="true" haltonfailure="true">
+<classpath refid="classpath.test"/>
+<formatter usefile="false" type ="brief"/>
+<test name ="JUnit.JUnitTestCaseRunner"/>
+</junit>
+</target>
+
+<target name="gradle-clean-build" depends="clean-custom,copy-custom,gradle,patch-install">
+    <echo>Gradle Clean Build Successfull</echo>
+</target>
+
+<target name="gradle" depends="gradle-clean,gradle-cup">
+    <echo>Gradle Clean Build Call</echo>
+</target>
+
+<target name="gradle-clean">
+<chmod file="${calypso_path}/${calypso_dir}/tools/gradle/bin/gradle" perm="755" />
+    <exec dir="${calypso_path}/${calypso_dir}/custom-extensions" executable="/bin/bash" failonerror="true">
+        <arg value="bld" />
+        <arg value="clean" />
+    </exec>
+    <echo>Gradle-Clean Done</echo>
+</target>
+
+<target name="patch-install">
+    <exec dir="${calypso_path}/${calypso_dir}" executable="/bin/bash" failonerror="true">
+        <arg value="patch.sh" />
+        <arg value="--install" />
+        <arg value="--yes" />
+        <arg value="custom-extensions/custom-projects-distribution.cup" />
+    </exec>
+</target>
+
+<target name="gradle-cup">
+<chmod file="${calypso_path}/${calypso_dir}/tools/gradle/bin/gradle" perm="755" />
+    <exec dir="${calypso_path}/${calypso_dir}/custom-extensions" executable="/bin/bash" failonerror="true">
+        <arg value="bld" />        
+        <arg value="createCup" />
+    </exec>
+</target>
+
+<target name="gradle-build">
+    <exec dir="${calypso_path}/${calypso_dir}/custom-extensions" executable="/bin/bash" failonerror="true">
+        <arg value="bld" />
+        <arg value="deploy" />
+    </exec>
+    <echo>Gradle-Build Done</echo>
+</target>
+
+<target name="copy-custom">
+    <echo message="Copy Files from Jenkins Workspace Project" />
+    <copy todir="${calypso_path}/${calypso_dir}/${custom_shared_lib}/" overwrite="true">
+        <fileset dir="${custom_path}" includes="${custom_project}/**"/>
+    </copy>
+</target>
+
+<target name="clean-custom">
+    <echo message="Cleaning files from custom-shared-lib location" />
+    <delete includeEmptyDirs="true">
+    <fileset dir="${calypso_path}/${calypso_dir}/${custom_shared_lib}/" />
+    </delete>
+</target>
+
+<target name="deploy" depends="stop-calypso-services,deploy-local">
+    <echo>Deployment Successfull</echo>
+</target>
+
+<target name="stop-calypso-services">
+    <exec dir="${calypso_services_scripts_path}" executable="/bin/bash" failonerror="true">
+        <arg value="${stop_calypso_services_filename}" />
+    </exec>
+</target>
+
+<target name="deploy-local">
+    <exec dir="${calypso_path}/${calypso_dir}" executable="/bin/bash" failonerror="true">
+        <arg value="deployLocal.sh" />
+	<arg value="-Penv=${envname}" />
+    </exec>
+</target>
+
+<target name="start-calypso-services">
+    <exec dir="${calypso_services_scripts_path}" executable="/bin/bash" failonerror="true">
+        <arg value="${start_calypso_services_filename}" />
+    </exec>
+</target>
+
+</project>
+
+
+
+
+
+
+
