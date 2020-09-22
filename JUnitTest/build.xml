@@ -96,7 +96,7 @@
     </delete>
 </target>
 
-<target name="deploy" depends="stop-calypso-services,deploy-local">
+<!--<target name="deploy" depends="stop-calypso-services,deploy-local">
     <echo>Deployment Successfull</echo>
 </target>
 
@@ -104,20 +104,20 @@
     <exec dir="${calypso_services_scripts_path}" executable="/bin/bash" failonerror="true">
         <arg value="${stop_calypso_services_filename}" />
     </exec>
-</target>
+</target>-->
 
-<target name="deploy-local">
+<target name="deploy">
     <exec dir="${calypso_path}/${calypso_dir}" executable="/bin/bash" failonerror="true">
         <arg value="deployLocal.sh" />
 	<arg value="-Penv=${envname}" />
     </exec>
 </target>
 
-<target name="start-calypso-services">
+<!--<target name="start-calypso-services">
     <exec dir="${calypso_services_scripts_path}" executable="/bin/bash" failonerror="true">
         <arg value="${start_calypso_services_filename}" />
     </exec>
-</target>
+</target>-->
 
 </project>
 
