@@ -35,8 +35,8 @@
 <target name="test" depends="compile">
 <junit haltonerror="true" haltonfailure="true">
 <classpath refid="classpath.test"/>
-<formatter usefile="false" type ="brief"/>
-<test name ="JUnit.JUnitTestCaseRunner"/>
+<test name ="JUnit.JUnitTestCaseRunner" todir="reportsxml"/>
+<formatter type ="xml"/>
 </junit>
 </target>
 
