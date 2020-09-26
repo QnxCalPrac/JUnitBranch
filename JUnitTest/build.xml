@@ -39,20 +39,6 @@
 <formatter type ="xml"/>
 </junit>
 </target>
-	
-<target name="coverageReport" depends="test">
-<jacoco:report>
-<executiondata><file file="target/jacoco.exec"/>
-</executiondata><structure name="Code Annotation Project">
-<classfiles>
-<fileset dir="JUnitTest/test/JUnit"/>
-</classfiles>
-<sourcefiles encoding="UTF-8">
-<fileset dir="JUnitTest/src/JUnit"/>
-</sourcefiles></structure>
-<html destdir="target/coverageReport"/>
-</jacoco:report>
-</target>
 
 <target name="gradle-clean-build" depends="clean-custom,copy-custom,gradle,patch-install">
     <echo>Gradle Clean Build Successfull</echo>
