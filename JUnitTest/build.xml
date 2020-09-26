@@ -33,11 +33,13 @@
 </target>
 	
 <target name="test" depends="compile">
+<jacoco:coverage destfile="target/jacoco.exec">
 <junit haltonerror="true" haltonfailure="true">
 <classpath refid="classpath.test"/>
 <test name ="JUnit.JUnitTestCaseRunner" todir="reportsxml"/>
 <formatter type ="xml"/>
 </junit>
+</jacoco:coverage>
 </target>
 
 <target name="gradle-clean-build" depends="clean-custom,copy-custom,gradle,patch-install">
