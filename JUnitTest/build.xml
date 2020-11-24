@@ -119,6 +119,44 @@
     </exec>
 </target>-->
 
+<target name="deploy-remote">
+    <exec dir="${calypso_path}/${calypso_dir}" executable="/bin/bash" failonerror="true" output="op.log">
+        <arg value="deployRemote.sh" />
+        <arg value="-Penv=${remote_envname}" />
+    </exec>
+</target>
+
+<target name="publish">
+    <echo>Cleaning project ${remote_calypso_home} at ${remote_server}</echo>
+    <sshexec host="${remote_server}"
+             username="root"
+             keyfile="${key_file}"
+             command="rm -rf ${remote_calypso_home}/*"
+             failonerror="true" trust="true"/>
+    <echo>Creating temp location at ${remote_server}</echo>
+    <sshexec host="${remote_server}"
+             username="root"
+             keyfile="${key_file}"
+             command="mkdir -p ${remote_calypso_home}/temp/deploy-remote" failonerror="true" trust="true"/>
+    <echo>Copying files to ${remote_server}</echo>
+    <scp todir="root@${remote_server}:${remote_calypso_home}/temp/deploy-remote" keyfile="${key_file}" failonerror="true" trust="true">
+        <fileset dir="${calypso_path}/${calypso_dir}/deploy-remote"/>
+    </scp>
+    <echo>Publish on ${remote_server}</echo>
+    <sshexec host="${remote_server}"
+             username="root"
+             keyfile="${key_file}"
+             command="export CALYPSO_HOME=${remote_calypso_home};cd ${remote_calypso_home}/temp/deploy-remote/${remote_envname};bash ./localhost.sh" 
+             inputstring="y"
+             output="${remote_envname}_output.log" failonerror="true" trust="true"/>
+    <echo>Remove temp location at ${remote_server}</echo>
+    <sshexec host="${remote_server}"
+             username="root"
+             keyfile="${key_file}"
+             command="rm -rf ${remote_calypso_home}/temp"
+             failonerror="true" trust="true"/>
+</target>
+
 </project>
 
 
