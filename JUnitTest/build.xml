@@ -157,6 +157,15 @@
              failonerror="true" trust="true"/>
 </target>
 
+<target name="cucumber-build">
+<chmod file="${calypso_path}/${calypso_dir}/tools/gradle/bin/gradle" perm="755" />
+    <exec dir="${cucumber_test_path}" executable="/bin/bash" failonerror="true">
+        <arg value="bld" />
+        <arg value="cucumber" />
+    </exec>
+    <echo>Cucumber-build Done</echo>
+</target>
+
 </project>
 
 
