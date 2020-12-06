@@ -23,11 +23,11 @@ public class CheckCustomSwapTradeRule implements WfTradeRule{
 		{
 			messages.add(MESSAGE);
 			System.out.println("5M check");
-			return true ;
+			return false ;
 			
 		}
 		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
@@ -36,7 +36,7 @@ public class CheckCustomSwapTradeRule implements WfTradeRule{
 	{
 		// TODO Auto-generated method stub
 		Log.system(LOG,"This is update method");
-		return false;
+		return true;
 	}
 
 	@Override
