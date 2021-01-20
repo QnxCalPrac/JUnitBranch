@@ -113,11 +113,11 @@
     </exec>
 </target>
 
-<!--<target name="start-calypso-services">
+<!-- <target name="start-calypso-services">
     <exec dir="${calypso_services_scripts_path}" executable="/bin/bash" failonerror="true">
         <arg value="${start_calypso_services_filename}" />
     </exec>
-</target>-->
+</target> -->
 
 <target name="deploy-remote">
     <exec dir="${calypso_path}/${calypso_dir}" executable="/bin/bash" failonerror="true" output="op.log">
