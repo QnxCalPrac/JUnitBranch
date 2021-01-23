@@ -22,10 +22,6 @@
 </path>
 
 <target name="clean">
-<exec executable="/bin/bash" >
-   <arg value="-c" />
-   <arg value="export CLASSPATH=${calypso_path}/${calypso_dir}/client/lib/junit-4.10.jar" />
-</exec>
 <delete verbose="${full-compile}">
 <fileset dir ="${testdir}" includes="**/*.class"/>
 </delete>
