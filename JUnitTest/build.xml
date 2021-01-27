@@ -31,13 +31,38 @@
 <javac classpathref ="classpath.test"  verbose="${full-compile}" destdir="${testdir}" srcdir="${srcdir}" includeantruntime="false">
 </javac>
 </target>
-	
+
 <target name="test" depends="compile">
+<typedef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+<classpath path="lib/jacocoant.jar"/>
+</typedef>
+<jacoco:coverage destfile="reportsxml/coverage/jacoco.exec" xmlns:jacoco="antlib:org.jacoco.ant">
 <junit haltonerror="true" fork="true" haltonfailure="true">
 <classpath refid="classpath.test"/>
 <test name ="JUnit.JUnitTestCaseRunner" todir="reportsxml"/>
 <formatter type ="xml"/>
 </junit>
+</jacoco:coverage>
+</target>
+
+<target name="report" description="Collect Coverage Report">
+<typedef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+<classpath path="lib/jacocoant.jar"/>
+</typedef>
+<jacoco:report xmlns:jacoco="antlib:org.jacoco.ant">
+<executiondata>
+<file file="reportsxml/coverage/jacoco.exec" />
+</executiondata>
+<structure name="Code Coverage">
+<classfiles>
+<fileset dir="test/JUnit"/>
+</classfiles>
+<sourcefiles encoding="UTF-8">
+<fileset dir="src/JUnit"/>
+</sourcefiles>
+</structure>
+<xml destfile="reportsxml/coverage/report.xml" />
+</jacoco:report>
 </target>
 
 <target name="gradle-clean-build" depends="clean-custom,copy-custom,gradle,patch-install">
@@ -167,10 +192,3 @@
 </target>
 
 </project>
-
-
-
-
-
-
-
