@@ -124,7 +124,6 @@
 <!--<target name="deploy" depends="stop-calypso-services,deploy-local">
     <echo>Deployment Successfull</echo>
 </target>
-
 <target name="stop-calypso-services">
     <exec dir="${calypso_services_scripts_path}" executable="/bin/bash" failonerror="true">
         <arg value="${stop_calypso_services_filename}" />
@@ -188,7 +187,7 @@
         <arg value="bld" />
         <arg value="cucumber" />
     </exec>
-    <echo>Cucumber-build Done</echo>
+    <echo>Cucumber-build done</echo>
 </target>
 
 </project>
