@@ -187,7 +187,7 @@
         <arg value="bld" />
         <arg value="cucumber" />
     </exec>
-    <echo>Cucumber-build done</echo>
+    <echo>Cucumber-build Done</echo>
 </target>
 
 </project>
