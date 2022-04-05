@@ -1,0 +1,1 @@
+Junit uses this folder to include .class files after compiling java codes.

@@ -6,8 +6,10 @@
 <property name="full-compile" location="true"/>
 <property name="testdir" location="test"/>
 <property name="srcdir" location="src"/>
-<property name="rscdir" location="${calypso.path}/${calypso.dir}/client/resources"/>
-<property name="libdir" location="${calypso.path}/${calypso.dir}/client/lib"/>
+<property name="rscdir" location="${calypso_path}/${calypso_dir}/client/resources"/>
+<property name="libdir" location="${calypso_path}/${calypso_dir}/client/lib"/>
+<!--<property name="rscdir" location="${calypso.path}/${calypso.dir}/client/resources"/>-->
+<!--<property name="libdir" location="${calypso.path}/${calypso.dir}/client/lib"/>-->
 
 <path id="classpath">	
 <path location = "${calypso_path}/${calypso_dir}/client/lib">
@@ -31,13 +33,38 @@
 <javac classpathref ="classpath.test"  verbose="${full-compile}" destdir="${testdir}" srcdir="${srcdir}" includeantruntime="false">
 </javac>
 </target>
-	
+
 <target name="test" depends="compile">
-<junit haltonerror="true" haltonfailure="true">
+<typedef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+<classpath path="lib/jacocoant.jar"/>
+</typedef>
+<jacoco:coverage destfile="reportsxml/coverage/jacoco.exec" xmlns:jacoco="antlib:org.jacoco.ant">
+<junit haltonerror="true" fork="true" haltonfailure="true">
 <classpath refid="classpath.test"/>
-<formatter usefile="false" type ="brief"/>
-<test name ="JUnit.JUnitTestCaseRunner"/>
+<test name ="JUnit.JUnitTestCaseRunner" todir="reportsxml"/>
+<formatter type ="xml"/>
 </junit>
+</jacoco:coverage>
+</target>
+
+<target name="report" description="Collect Coverage Report">
+<typedef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+<classpath path="lib/jacocoant.jar"/>
+</typedef>
+<jacoco:report xmlns:jacoco="antlib:org.jacoco.ant">
+<executiondata>
+<file file="reportsxml/coverage/jacoco.exec" />
+</executiondata>
+<structure name="Code Coverage">
+<classfiles>
+<fileset dir="test/JUnit"/>
+</classfiles>
+<sourcefiles encoding="UTF-8">
+<fileset dir="src/JUnit"/>
+</sourcefiles>
+</structure>
+<xml destfile="reportsxml/coverage/report.xml" />
+</jacoco:report>
 </target>
 
 <target name="gradle-clean-build" depends="clean-custom,copy-custom,gradle,patch-install">
@@ -96,34 +123,73 @@
     </delete>
 </target>
 
-<target name="deploy" depends="stop-calypso-services,deploy-local">
+<!--<target name="deploy" depends="stop-calypso-services,deploy-local">
     <echo>Deployment Successfull</echo>
 </target>
-
 <target name="stop-calypso-services">
     <exec dir="${calypso_services_scripts_path}" executable="/bin/bash" failonerror="true">
         <arg value="${stop_calypso_services_filename}" />
     </exec>
-</target>
+</target>-->
 
-<target name="deploy-local">
+<target name="deploy">
     <exec dir="${calypso_path}/${calypso_dir}" executable="/bin/bash" failonerror="true">
         <arg value="deployLocal.sh" />
 	<arg value="-Penv=${envname}" />
     </exec>
 </target>
 
-<target name="start-calypso-services">
+<!--<target name="start-calypso-services">
     <exec dir="${calypso_services_scripts_path}" executable="/bin/bash" failonerror="true">
         <arg value="${start_calypso_services_filename}" />
     </exec>
+</target>-->
+
+<target name="deploy-remote">
+    <exec dir="${calypso_path}/${calypso_dir}" executable="/bin/bash" failonerror="true" output="op.log">
+        <arg value="deployRemote.sh" />
+        <arg value="-Penv=${remote_envname}" />
+    </exec>
+</target>
+
+<target name="publish">
+    <echo>Cleaning project ${remote_calypso_home} at ${remote_server}</echo>
+    <sshexec host="${remote_server}"
+             username="root"
+             keyfile="${key_file}"
+             command="rm -rf ${remote_calypso_home}/*"
+             failonerror="true" trust="true"/>
+    <echo>Creating temp location at ${remote_server}</echo>
+    <sshexec host="${remote_server}"
+             username="root"
+             keyfile="${key_file}"
+             command="mkdir -p ${remote_calypso_home}/temp/deploy-remote" failonerror="true" trust="true"/>
+    <echo>Copying files to ${remote_server}</echo>
+    <scp todir="root@${remote_server}:${remote_calypso_home}/temp/deploy-remote" keyfile="${key_file}" failonerror="true" trust="true">
+        <fileset dir="${calypso_path}/${calypso_dir}/deploy-remote"/>
+    </scp>
+    <echo>Publish on ${remote_server}</echo>
+    <sshexec host="${remote_server}"
+             username="root"
+             keyfile="${key_file}"
+             command="export CALYPSO_HOME=${remote_calypso_home};cd ${remote_calypso_home}/temp/deploy-remote/${remote_envname};bash ./localhost.sh" 
+             inputstring="y"
+             output="${remote_envname}_output.log" failonerror="true" trust="true"/>
+    <echo>Remove temp location at ${remote_server}</echo>
+    <sshexec host="${remote_server}"
+             username="root"
+             keyfile="${key_file}"
+             command="rm -rf ${remote_calypso_home}/temp"
+             failonerror="true" trust="true"/>
+</target>
+
+<target name="cucumber-build">
+<chmod file="${calypso_path}/${calypso_dir}/tools/gradle/bin/gradle" perm="755" />
+    <exec dir="${cucumber_test_path}" executable="/bin/bash" failonerror="true">
+        <arg value="bld" />
+        <arg value="cucumber" />
+    </exec>
+    <echo>Cucumber-build done</echo>
 </target>
 
 </project>
-
-
-
-
-
-
-

@@ -19,29 +19,27 @@ public class CheckCustomSwapTradeRule implements WfTradeRule{
 			Vector excps, Task task, Object dbCon, Vector events) 
 	{
 		Log.system(LOG,"This is check method()");
+		//Logic to check if notional is less than 5 millions
 		if(trade.getProduct().getPrincipal()<Nominal)
 		{
 			messages.add(MESSAGE);
 			System.out.println("5M check");
-			return true ;
+			return false ;
 			
 		}
-		// TODO Auto-generated method stub
-		return false;
+		return true;
 	}
 
 	@Override
 	public boolean update(TaskWorkflowConfig wc, Trade trade, Trade oldTrade, Vector messages, DSConnection dsCon,
 			Vector excps, Task task, Object dbCon, Vector events) 
 	{
-		// TODO Auto-generated method stub
 		Log.system(LOG,"This is update method");
-		return false;
+		return true;
 	}
 
 	@Override
-	public String getDescription() {
-		// TODO Auto-generated method stub
+	public String getDescription() {		
 		Log.system(LOG,"This is custom workflow rule and Description method()");
 		return "This rule is for SWAP trades Please enter amount grater than 5M";
 		
