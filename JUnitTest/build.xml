@@ -6,8 +6,10 @@
 <property name="full-compile" location="true"/>
 <property name="testdir" location="test"/>
 <property name="srcdir" location="src"/>
-<property name="rscdir" location="${calypso.path}/${calypso.dir}/client/resources"/>
-<property name="libdir" location="${calypso.path}/${calypso.dir}/client/lib"/>
+<property name="rscdir" location="${calypso_path}/${calypso_dir}/client/resources"/>
+<property name="libdir" location="${calypso_path}/${calypso_dir}/client/lib"/>
+<!--<property name="rscdir" location="${calypso.path}/${calypso.dir}/client/resources"/>-->
+<!--<property name="libdir" location="${calypso.path}/${calypso.dir}/client/lib"/>-->
 
 <path id="classpath">	
 <path location = "${calypso_path}/${calypso_dir}/client/lib">
